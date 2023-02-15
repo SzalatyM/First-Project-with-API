@@ -30,12 +30,19 @@ namespace MyBoard.Entities
                 eb.Property(wi => wi.Activity).HasMaxLength(200);
                 eb.Property(wi => wi.RemainingWork).HasPrecision(14, 2);
                 eb.Property(wi => wi.Priority).HasDefaultValue(1);
+                eb.HasMany(w => w.Comments)
+                .WithOne(c => c.WorkItem)
+                .HasForeignKey(c => c.WorkItemId);
             });
             modelBuilder.Entity<Comment>(eb =>
             {
                 eb.Property(x => x.CreatedDate).HasDefaultValueSql("getutcdate()");
                 eb.Property(x => x.UpdatedDate).ValueGeneratedOnUpdate();
             });
+            modelBuilder.Entity<User>()
+                .HasOne(u => u.Address)
+                .WithOne(u => u.User)
+                .HasForeignKey<Address>(a => a.UserId);
         }
     }
 }
